@@ -16,15 +16,13 @@ public class sintext extends Application {
 
 
         VBox vb1 = new VBox();
-        vb1.setId("vb1");
+        vb1.setStyle("-fx-min-width:900px;-fx-background-color:red;");
         Button b1= new Button("Click Me!");
-        b1.setStyle("-fx-background-color:blue");
+        b1.setStyle("-fx-min-width:90px");
         vb1.getChildren().addAll(b1);
-        b1.setId("b1");
         VBox vb2 = new VBox();
-        vb2.setId("vb2");
         HBox master = new HBox();
-        master.setId("master");
+        master.setStyle("-fx-min-height:100%;-fx-min-width:100%;-fx-background-color:gray");
         master.getChildren().addAll(vb1,vb2);
 
 
