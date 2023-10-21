@@ -21,9 +21,8 @@ public class sintext extends Application {
         StackPane root = new StackPane();
         boolean darkTheme=false;
         Scene scene = new Scene(root, 960, 540);
-        scene.getStylesheets().add("./app.css");
         final int[] lcount = {1};
-
+        String indexValue;
         VBox vb1 = new VBox();
         vb1.setStyle("-fx-pref-width:120px;-fx-background-color:red;");
         Button b1= new Button();
@@ -35,17 +34,68 @@ public class sintext extends Application {
             }
         } );
         vb1.getChildren().addAll(b1);
+        vb1.setVisible(false);
+        vb1.setManaged(false);
         VBox vb2 = new VBox();
         Label ins = new Label("Tanishq");
-        TextArea editor = new TextArea();
-        TextField cmd = new TextField();
-        editor.setWrapText(false);
-        editor.textProperty().addListener((observable, oldValue, newValue) -> {
-            int lineCount = editor.getText().split("\n").length;
-            System.out.println("Number of lines: " + lineCount);
-            lcount[0] =lineCount;
+
+        HBox editor = new HBox();
+
+        TextArea indexLines = new TextArea();
+        indexLines.setStyle("-fx-background-color: transparent; -fx-text-box-border: transparent;");
+        indexLines.setWrapText(true);
+        indexLines.setMaxWidth(55);
+        indexLines.setEditable(false);
+        TextArea teditor = new TextArea();
+        HBox.setHgrow(teditor,Priority.ALWAYS);
+        teditor.setWrapText(false);
+
+        teditor.textProperty().addListener((observable, oldValue, newValue) -> {
+            int lineCount = teditor.getText().split("\n").length;
+            System.out.println("Number of lines: " + lcount[0]);
+
             b1.setText(String.valueOf(lineCount));
+
+            String output = "00000 ";
+            if(lineCount>=lcount[0]){
+            lcount[0] =lineCount;
+
+            if(lineCount>26){
+            for(int i = lineCount-25;i<=lineCount+1;i++){
+
+
+                if(i>9&&i<100) {
+                    output += "000" + String.valueOf(i) + " ";
+                }
+                if(i>99&&i<1000) {
+                    output += "00" + String.valueOf(i) + " ";
+                }
+                if(i>999&&i<10000) {
+                    output += "0" + String.valueOf(i) + " ";
+                }
+                if(output.equals("00000 ")){
+                 output="";
+                }else indexLines.setText(output);
+            }
+                }else{
+                    for(int i = 0;i<lineCount;i++){
+                    if(i>0&&i<10) {
+                        output += "0000" + String.valueOf(i) + " ";
+                    }
+                        if(i>9) {
+                            output += "000" + String.valueOf(i) + " ";
+                        }
+                        indexLines.setText(output);
+                }
+                }
+
+            }
         });
+
+        editor.getChildren().addAll(indexLines,teditor);
+
+        TextField cmd = new TextField();
+
 
 
         vb2.setStyle("-fx-pref-width:100%;-fx-background-color:green");
@@ -68,6 +118,8 @@ public class sintext extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+
 
     public static void main(String[] args) {
         launch();
