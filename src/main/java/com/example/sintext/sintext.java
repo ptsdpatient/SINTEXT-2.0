@@ -11,10 +11,13 @@ public class sintext extends Application {
     @Override
     public void start(Stage stage){
 
-
+        VBox vb1 = new VBox();
+        VBox vb2 = new VBox();
+        HBox master = new HBox();
+        master.getChildren().addAll(vb1,vb2);
 
         Group root = new Group();
-        root.getChildren().addAll();
+        root.getChildren().addAll(master);
         Scene scene = new Scene(root, 960, 540);
         stage.setTitle("SINTEXT 2.0");
         stage.setScene(scene);
