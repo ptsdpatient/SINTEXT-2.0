@@ -95,8 +95,8 @@ public class sintext extends Application {
         vb2.setStyle("-fx-pref-width:100%;-fx-background-color:green");
         VBox.setVgrow(editor, Priority.ALWAYS);
         editor.setStyle("-fx-pref-width:Infinity;-fx-font-size:16;-fx-control-inner-background: #1b1b1b");
-        //editor.setFont(poppinsFont);
-
+        Font editorFont = Font.loadFont(getClass().getResourceAsStream("arial.ttf"), 36);
+        editor.setFont(editorFont);
         vb2.getChildren().addAll(m1,editor,ins, cmd);
 
 
@@ -201,6 +201,7 @@ public class sintext extends Application {
             HBox fontSize = new HBox();
             Label fontSizeLabel = new Label("font size : ");
             Slider fontSizeSlider = new Slider(16,64,1);
+            fontSizeSlider.setValue(editor.getFont().getSize());
             Label fontSizeValue = new Label(fontSizeSlider.getValue()+"");
             fontSize.getChildren().addAll(fontSizeLabel,fontSizeSlider,fontSizeValue);
             fontSize.setAlignment(Pos.CENTER);
@@ -208,21 +209,38 @@ public class sintext extends Application {
 
             HBox fontFamily = new HBox(10);
             Label fontFamilyLabel = new Label("font family : ");
-            MenuButton fontFamilyMenu = new MenuButton("arial");
+            MenuButton fontFamilyMenu = new MenuButton(editor.getFont().getFamily());
             MenuItem arial = new MenuItem("arial");
             MenuItem avenir = new MenuItem("avenir");
             MenuItem cascadia = new MenuItem("cascadia");
-            MenuItem dejavusans = new MenuItem("dejavu sans");
+            MenuItem dejavusans = new MenuItem("dejavusans");
             MenuItem futura = new MenuItem("futura");
-            Label fontFamilyValue = new Label("arial");
+            MenuItem helvetica = new MenuItem("helvetica");
+            MenuItem jetbrains = new MenuItem("jetbrains");
+            MenuItem poppins = new MenuItem("poppins");
+            MenuItem quicksandbook = new MenuItem("quicksandbook");
+            MenuItem sourcecodepro = new MenuItem("sourcecodepro");
+            MenuItem timesnewroman = new MenuItem("timesnewroman");
+            MenuItem univers = new MenuItem("univers");
+            MenuItem verdana = new MenuItem("verdana");
 
+
+            Label fontFamilyValue = new Label(editor.getFont().getFamily());
+            jetbrains.setOnAction(eventClick->{fontFamilyMenu.setText("jetbrains");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            poppins.setOnAction(eventClick->{fontFamilyMenu.setText("poppins");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            quicksandbook.setOnAction(eventClick->{fontFamilyMenu.setText("quicksandbook");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            sourcecodepro.setOnAction(eventClick->{fontFamilyMenu.setText("sourcecodepro");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            timesnewroman.setOnAction(eventClick->{fontFamilyMenu.setText("timesnewroman");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            univers.setOnAction(eventClick->{fontFamilyMenu.setText("univers");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            verdana.setOnAction(eventClick->{fontFamilyMenu.setText("verdana");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            helvetica.setOnAction(eventClick->{fontFamilyMenu.setText("helvetica");fontFamilyValue.setText(fontFamilyMenu.getText());});
             arial.setOnAction(eventClick->{fontFamilyMenu.setText("arial");fontFamilyValue.setText(fontFamilyMenu.getText());});
             avenir.setOnAction(eventClick->{fontFamilyMenu.setText("avenir");fontFamilyValue.setText(fontFamilyMenu.getText());});
             cascadia.setOnAction(eventClick->{fontFamilyMenu.setText("cascadia");fontFamilyValue.setText(fontFamilyMenu.getText());});
             dejavusans.setOnAction(eventClick->{fontFamilyMenu.setText("dejavu sans");fontFamilyValue.setText(fontFamilyMenu.getText());});
             futura.setOnAction(eventClick->{fontFamilyMenu.setText("futura");fontFamilyValue.setText(fontFamilyMenu.getText());});
 
-            fontFamilyMenu.getItems().addAll(arial,avenir,cascadia,dejavusans,futura);
+            fontFamilyMenu.getItems().addAll(verdana,helvetica,jetbrains,poppins,univers,timesnewroman,sourcecodepro,quicksandbook,arial,avenir,cascadia,dejavusans,futura);
             fontFamily.getChildren().addAll(fontFamilyLabel,fontFamilyMenu,fontFamilyValue);
             fontFamily.setAlignment(Pos.CENTER);
 
@@ -230,13 +248,26 @@ public class sintext extends Application {
             HBox theme = new HBox(10);
             Label themeLabel = new Label("theme : ");
             MenuButton themeMenu = new MenuButton("dark");
-            MenuItem dark = new MenuItem("dark");
+
+            MenuItem atomOne = new MenuItem("one dark");
             MenuItem light = new MenuItem("light");
+            MenuItem dark = new MenuItem("dark");
+            MenuItem butter = new MenuItem("butter");
+            MenuItem blood = new MenuItem("blood");
+            MenuItem lime = new MenuItem("lime");
+            MenuItem cobalt = new MenuItem("cobalt");
+
             Label themeValue = new Label("dark");
-            themeMenu.getItems().addAll(dark,light);
+
+            themeMenu.getItems().addAll(atomOne,light,dark,butter,blood,lime,cobalt);
             theme.getChildren().addAll(themeLabel,themeMenu,themeValue);
             theme.setAlignment(Pos.CENTER);
 
+            atomOne.setOnAction(eventClick->{themeMenu.setText("onedark");themeValue.setText(themeMenu.getText());});
+            butter.setOnAction(eventClick->{themeMenu.setText("butter");themeValue.setText(themeMenu.getText());});
+            blood.setOnAction(eventClick->{themeMenu.setText("blood");themeValue.setText(themeMenu.getText());});
+            lime.setOnAction(eventClick->{themeMenu.setText("lime");themeValue.setText(themeMenu.getText());});
+            cobalt.setOnAction(eventClick->{themeMenu.setText("cobalt");themeValue.setText(themeMenu.getText());});
             dark.setOnAction(eventClick->{themeMenu.setText("dark");themeValue.setText(themeMenu.getText());});
             light.setOnAction(eventClick->{themeMenu.setText("light");themeValue.setText(themeMenu.getText());});
 
@@ -253,14 +284,26 @@ public class sintext extends Application {
                 @Override
                 public void handle(ActionEvent event) {
 
-                        Font newFont = Font.loadFont(getClass().getResourceAsStream("poppins.ttf"), 36);
+                        Font newFont = Font.loadFont(getClass().getResourceAsStream(fontFamilyValue.getText()+".ttf"), 36);
                         editor.setFont(newFont);
 
-                    if(Objects.equals(themeValue.getText(), "light")) {
-
-                        editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#fafdff;");
-                    }else{
-                        editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#1b1b1b;");
+                    switch(themeValue.getText()) {
+                        case "light":
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#fafdff;");break;
+                        case "onedark":
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#282c34;");break;
+                        case "butter":
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#e5c07b;");break;
+                        case "blood":
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#e06c75;");break;
+                        case "lime":
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#98c379;");break;
+                        case "cobalt":
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#61afef;");break;
+                        case "dark":
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#1b1b1b;");break;
+                        default:
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#a8a8a8;");break;
 
                     }
                     popupStage.close();
