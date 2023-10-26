@@ -376,6 +376,52 @@ public class sintext extends Application {
                 cmd.requestFocus();
             }
         });
+
+        cmd.setOnKeyPressed(KeyEvent->{
+            if(KeyEvent.getCode()==KeyCode.ENTER && cmd.isFocused()){
+                String[] parsedCMD = cmd.getText().split(" ");
+                if(Objects.equals(parsedCMD[0], "s")){
+                    if(currentFile[0]!=null){
+                        try (FileWriter fileWriter = new FileWriter(currentFile[0])) {
+                            fileWriter.write(editor.getText()+" ");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else{
+                        FileChooser fileChooser = new FileChooser();
+                        File file = fileChooser.showSaveDialog(stage);
+                        try (FileWriter fileWriter = new FileWriter(file)) {
+                            fileWriter.write(editor.getText()+" ");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                }
+                if(Objects.equals(parsedCMD[0], "o")){
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setTitle("open file");
+                    File file = fileChooser.showOpenDialog(stage);
+                    currentFile[0] = file;
+
+                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                        StringBuilder content = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            content.append(line).append("\n");
+                        }
+                        editor.setText(content.toString());
+                    } catch (IOException ex) {
+                        System.out.println(ex + "");
+                    }
+                }
+                if(Objects.equals(parsedCMD[0], "e")){
+                    stage.close();
+                }
+
+            }
+        });
+
         Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("sintext-icon.png")));
         stage.getIcons().add(icon);
         stage.setTitle("sintext");
