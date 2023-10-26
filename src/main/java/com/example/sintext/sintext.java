@@ -14,18 +14,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import java.util.HashMap;
 
+import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuBar;
@@ -94,9 +96,12 @@ public class sintext extends Application {
         cmd.setStyle("-fx-prompt-text-fill:gray");
         vb2.setStyle("-fx-pref-width:100%;-fx-background-color:green");
         VBox.setVgrow(editor, Priority.ALWAYS);
-        editor.setStyle("-fx-pref-width:Infinity;-fx-font-size:16;-fx-control-inner-background: #1b1b1b");
-        Font editorFont = Font.loadFont(getClass().getResourceAsStream("arial.ttf"), 36);
+        editor.setStyle("-fx-pref-width:Infinity;-fx-font-size:20;-fx-control-inner-background: #282c34;");
+
+        Font editorFont = Font.loadFont(getClass().getResourceAsStream("poppins.ttf"), 36);
         editor.setFont(editorFont);
+
+
         vb2.getChildren().addAll(m1,editor,ins, cmd);
 
 
@@ -104,10 +109,11 @@ public class sintext extends Application {
         HBox.setHgrow(vb2, Priority.ALWAYS);
 
         master.getChildren().addAll(vb2);
-        master.setStyle("-fx-pref-height: 100%; -fx-pref-width: 100%;-fx-background-color: gray;");
-
+        master.setStyle("-fx-pref-height: 100%; -fx-pref-width: 100%;");
 
         root.getChildren().addAll(master);
+
+
         editor.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -247,9 +253,9 @@ public class sintext extends Application {
 
             HBox theme = new HBox(10);
             Label themeLabel = new Label("theme : ");
-            MenuButton themeMenu = new MenuButton("dark");
+            MenuButton themeMenu = new MenuButton("onedark");
 
-            MenuItem atomOne = new MenuItem("one dark");
+            MenuItem atomOne = new MenuItem("onedark");
             MenuItem light = new MenuItem("light");
             MenuItem dark = new MenuItem("dark");
             MenuItem butter = new MenuItem("butter");
@@ -257,7 +263,7 @@ public class sintext extends Application {
             MenuItem lime = new MenuItem("lime");
             MenuItem cobalt = new MenuItem("cobalt");
 
-            Label themeValue = new Label("dark");
+            Label themeValue = new Label("onedark");
 
             themeMenu.getItems().addAll(atomOne,light,dark,butter,blood,lime,cobalt);
             theme.getChildren().addAll(themeLabel,themeMenu,themeValue);
@@ -272,8 +278,12 @@ public class sintext extends Application {
             light.setOnAction(eventClick->{themeMenu.setText("light");themeValue.setText(themeMenu.getText());});
 
 
-
-
+            HBox textBox = new HBox(10);
+            Label textBoxLabel = new Label("text format : ");
+            CheckBox boldBox = new CheckBox("bold ");
+            CheckBox italicBox = new CheckBox("italic ");
+            textBox.getChildren().addAll(textBoxLabel,boldBox,italicBox);
+            textBox.setAlignment(Pos.CENTER);
             HBox close = new HBox(20);
             Button resetButton = new Button("reset");
             Button saveButton = new Button("save");
@@ -283,27 +293,34 @@ public class sintext extends Application {
             saveButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-
-                        Font newFont = Font.loadFont(getClass().getResourceAsStream(fontFamilyValue.getText()+".ttf"), 36);
-                        editor.setFont(newFont);
+                    Font newFont = Font.loadFont(getClass().getResourceAsStream(fontFamilyValue.getText()+".ttf"), 36);
+                    editor.setFont(newFont);
+                    String boldString="";
+                    if(boldBox.isSelected()){
+                        boldString="-fx-font-weight:bold;";
+                    }
+                    String italicString="";
+                    if(italicBox.isSelected()){
+                        italicString="-fx-font-style:italic;";
+                    }
 
                     switch(themeValue.getText()) {
                         case "light":
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#fafdff;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#fafdff;"+boldString+italicString);break;
                         case "onedark":
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#282c34;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#282c34;"+boldString+italicString);break;
                         case "butter":
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#e5c07b;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#FFD700;"+boldString+italicString);break;
                         case "blood":
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#e06c75;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#DC143C;"+boldString+italicString);break;
                         case "lime":
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#98c379;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#98c379;"+boldString+italicString);break;
                         case "cobalt":
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#61afef;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#61afef;"+boldString+italicString);break;
                         case "dark":
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#1b1b1b;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#1b1b1b;"+boldString+italicString);break;
                         default:
-                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#a8a8a8;");break;
+                            editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#a8a8a8;"+boldString+italicString);break;
 
                     }
                     popupStage.close();
@@ -311,25 +328,28 @@ public class sintext extends Application {
             });
             closeButton.setOnAction(eventClick->{popupStage.close();});
             resetButton.setOnAction(eventClick->{
-                fontSizeValue.setText("16");
-                fontSizeSlider.setValue(16);
+                fontSizeValue.setText("20");
+                fontSizeSlider.setValue(20);
                 fontFamilyMenu.setText("arial");
                 fontFamilyValue.setText("arial");
-                themeMenu.setText("dark");
-                themeValue.setText("dark");
+                themeMenu.setText("onedark");
+                themeValue.setText("onedark");
             });
+
+
+
             close.getChildren().addAll(resetButton,saveButton,closeButton);
             close.setAlignment(Pos.CENTER);
-            cluster.getChildren().addAll(fontSize,fontFamily,theme,close);
+            cluster.getChildren().addAll(fontSize,fontFamily,theme,textBox,close);
             cluster.setAlignment(Pos.CENTER);
-
             group.getChildren().add(cluster);
+
 
             fontSizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
                 fontSizeValue.setText(String.valueOf((int) newValue.doubleValue()));
             });
             popupStage.setResizable(false);
-            Scene popupScene = new Scene(group, 300, 175);
+            Scene popupScene = new Scene(group, 350, 210);
             popupStage.setScene(popupScene);
             popupStage.show();
         });
@@ -356,7 +376,9 @@ public class sintext extends Application {
                 cmd.requestFocus();
             }
         });
-        stage.setTitle("sintext 2.0");
+        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("sintext-icon.png")));
+        stage.getIcons().add(icon);
+        stage.setTitle("sintext");
         stage.setScene(scene);
         stage.show();
     }
