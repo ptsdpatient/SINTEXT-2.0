@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -31,6 +32,7 @@ import javafx.scene.control.MenuBar;
 import javafx.stage.StageStyle;
 
 import java.io.*;
+import java.util.Objects;
 
 public class sintext extends Application {
     int fontSize=4;
@@ -39,7 +41,6 @@ public class sintext extends Application {
     @Override
     public void start(Stage stage){
         final File[] currentFile = new File[1];
-        //Font poppinsFont = Font.loadFont("poppins.ttf",20);
         StackPane root = new StackPane();
         Scene scene = new Scene(root, 640, 480);
         MenuBar m1 = new MenuBar();
@@ -93,7 +94,7 @@ public class sintext extends Application {
         cmd.setStyle("-fx-prompt-text-fill:gray");
         vb2.setStyle("-fx-pref-width:100%;-fx-background-color:green");
         VBox.setVgrow(editor, Priority.ALWAYS);
-        editor.setStyle("-fx-pref-width:Infinity");
+        editor.setStyle("-fx-pref-width:Infinity;-fx-font-size:16;-fx-control-inner-background: #1b1b1b");
         //editor.setFont(poppinsFont);
 
         vb2.getChildren().addAll(m1,editor,ins, cmd);
@@ -188,7 +189,106 @@ public class sintext extends Application {
             editor.deleteText(editor.getSelection());
         });
         settings.setOnAction(event ->{
-            settingsPopUp();
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UTILITY);
+            popupStage.setTitle("Settings");
+
+            // Create the content for the popup
+            StackPane group = new StackPane();
+            VBox cluster = new VBox(16);
+
+            HBox fontSize = new HBox();
+            Label fontSizeLabel = new Label("font size : ");
+            Slider fontSizeSlider = new Slider(16,64,1);
+            Label fontSizeValue = new Label(fontSizeSlider.getValue()+"");
+            fontSize.getChildren().addAll(fontSizeLabel,fontSizeSlider,fontSizeValue);
+            fontSize.setAlignment(Pos.CENTER);
+
+
+            HBox fontFamily = new HBox(10);
+            Label fontFamilyLabel = new Label("font family : ");
+            MenuButton fontFamilyMenu = new MenuButton("arial");
+            MenuItem arial = new MenuItem("arial");
+            MenuItem avenir = new MenuItem("avenir");
+            MenuItem cascadia = new MenuItem("cascadia");
+            MenuItem dejavusans = new MenuItem("dejavu sans");
+            MenuItem futura = new MenuItem("futura");
+            Label fontFamilyValue = new Label("arial");
+
+            arial.setOnAction(eventClick->{fontFamilyMenu.setText("arial");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            avenir.setOnAction(eventClick->{fontFamilyMenu.setText("avenir");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            cascadia.setOnAction(eventClick->{fontFamilyMenu.setText("cascadia");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            dejavusans.setOnAction(eventClick->{fontFamilyMenu.setText("dejavu sans");fontFamilyValue.setText(fontFamilyMenu.getText());});
+            futura.setOnAction(eventClick->{fontFamilyMenu.setText("futura");fontFamilyValue.setText(fontFamilyMenu.getText());});
+
+            fontFamilyMenu.getItems().addAll(arial,avenir,cascadia,dejavusans,futura);
+            fontFamily.getChildren().addAll(fontFamilyLabel,fontFamilyMenu,fontFamilyValue);
+            fontFamily.setAlignment(Pos.CENTER);
+
+
+            HBox theme = new HBox(10);
+            Label themeLabel = new Label("theme : ");
+            MenuButton themeMenu = new MenuButton("dark");
+            MenuItem dark = new MenuItem("dark");
+            MenuItem light = new MenuItem("light");
+            Label themeValue = new Label("dark");
+            themeMenu.getItems().addAll(dark,light);
+            theme.getChildren().addAll(themeLabel,themeMenu,themeValue);
+            theme.setAlignment(Pos.CENTER);
+
+            dark.setOnAction(eventClick->{themeMenu.setText("dark");themeValue.setText(themeMenu.getText());});
+            light.setOnAction(eventClick->{themeMenu.setText("light");themeValue.setText(themeMenu.getText());});
+
+
+
+
+            HBox close = new HBox(20);
+            Button resetButton = new Button("reset");
+            Button saveButton = new Button("save");
+            Button closeButton = new Button("close");
+
+
+            saveButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+
+                        Font newFont = Font.loadFont(getClass().getResourceAsStream("poppins.ttf"), 36);
+                        editor.setFont(newFont);
+
+                    if(Objects.equals(themeValue.getText(), "light")) {
+
+                        editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#fafdff;");
+                    }else{
+                        editor.setStyle("-fx-font-size:"+fontSizeValue.getText()+";-fx-control-inner-background:#1b1b1b;");
+
+                    }
+                    popupStage.close();
+                }
+            });
+            closeButton.setOnAction(eventClick->{popupStage.close();});
+            resetButton.setOnAction(eventClick->{
+                fontSizeValue.setText("16");
+                fontSizeSlider.setValue(16);
+                fontFamilyMenu.setText("arial");
+                fontFamilyValue.setText("arial");
+                themeMenu.setText("dark");
+                themeValue.setText("dark");
+            });
+            close.getChildren().addAll(resetButton,saveButton,closeButton);
+            close.setAlignment(Pos.CENTER);
+            cluster.getChildren().addAll(fontSize,fontFamily,theme,close);
+            cluster.setAlignment(Pos.CENTER);
+
+            group.getChildren().add(cluster);
+
+            fontSizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                fontSizeValue.setText(String.valueOf((int) newValue.doubleValue()));
+            });
+            popupStage.setResizable(false);
+            Scene popupScene = new Scene(group, 300, 175);
+            popupStage.setScene(popupScene);
+            popupStage.show();
         });
         copy.setOnAction(event->{
             String selectedText = editor.getSelectedText();
@@ -205,7 +305,6 @@ public class sintext extends Application {
                     throw new RuntimeException(e);
                 }
             }
-            //Platform.exit();
             stage.close();
         });
         scene.setOnKeyPressed(keyEvent -> {
@@ -217,77 +316,6 @@ public class sintext extends Application {
         stage.setTitle("sintext 2.0");
         stage.setScene(scene);
         stage.show();
-    }
-    private void settingsPopUp() {
-        Stage popupStage = new Stage();
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.initStyle(StageStyle.UTILITY);
-        popupStage.setTitle("Settings");
-
-        // Create the content for the popup
-        StackPane group = new StackPane();
-        VBox cluster = new VBox(12);
-
-        HBox fontSize = new HBox();
-        Label fontSizeLabel = new Label("font size : ");
-        Slider fontSizeSlider = new Slider(16,64,1);
-        Label fontSizeValue = new Label(fontSizeSlider.getValue()+"");
-        fontSize.getChildren().addAll(fontSizeLabel,fontSizeSlider,fontSizeValue);
-        fontSize.setAlignment(Pos.CENTER);
-
-
-        HBox fontFamily = new HBox(10);
-        Label fontFamilyLabel = new Label("font family : ");
-        MenuButton fontFamilyMenu = new MenuButton("arial");
-        MenuItem arial = new MenuItem("arial");
-        MenuItem avenir = new MenuItem("avenir");
-        MenuItem cascadia = new MenuItem("cascadia");
-        MenuItem dejavusans = new MenuItem("dejavu sans");
-        MenuItem futura = new MenuItem("futura");
-        Label fontFamilyValue = new Label("arial");
-
-        arial.setOnAction(event->{fontFamilyMenu.setText("arial");});
-        avenir.setOnAction(event->{fontFamilyMenu.setText("avenir");});
-        cascadia.setOnAction(event->{fontFamilyMenu.setText("cascadia");});
-        dejavusans.setOnAction(event->{fontFamilyMenu.setText("dejavu sans");});
-        futura.setOnAction(event->{fontFamilyMenu.setText("futura");});
-
-        fontFamilyMenu.getItems().addAll(arial,avenir,cascadia,dejavusans,futura);
-        fontFamily.getChildren().addAll(fontFamilyLabel,fontFamilyMenu,fontFamilyValue);
-        fontFamily.setAlignment(Pos.CENTER);
-
-
-        HBox theme = new HBox(10);
-        Label themeLabel = new Label("theme : ");
-        MenuButton themeMenu = new MenuButton("dark");
-        MenuItem dark = new MenuItem("dark");
-        MenuItem light = new MenuItem("light");
-        Label themeValue = new Label("dark");
-        themeMenu.getItems().addAll(dark,light);
-        theme.getChildren().addAll(themeLabel,themeMenu,themeValue);
-        theme.setAlignment(Pos.CENTER);
-
-
-        HBox close = new HBox();
-        Button closeButton = new Button("close");
-        closeButton.setOnAction(event->{popupStage.close();});
-        close.getChildren().addAll(closeButton);
-        close.setAlignment(Pos.CENTER);
-        cluster.getChildren().addAll(fontSize,fontFamily,theme,close);
-        cluster.setAlignment(Pos.CENTER);
-
-        group.getChildren().add(cluster);
-
-        fontFamilyMenu.setOnAction(event->{
-            fontFamilyValue.setText(fontFamilyMenu.getText());
-        });
-        fontSizeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            fontSizeValue.setText(String.valueOf((int) newValue.doubleValue()));
-        });
-        popupStage.setResizable(false);
-        Scene popupScene = new Scene(group, 250, 165);
-        popupStage.setScene(popupScene);
-        popupStage.show();
     }
 
     public static void main(String[] args) {
